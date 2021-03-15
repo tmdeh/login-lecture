@@ -1,4 +1,7 @@
 "use strict";
+
+const UserString = require("../../models/UserString");
+
 const output ={
     home: (req,res) =>{
         res.render("home/index");
@@ -9,29 +12,27 @@ const output ={
     },
 };
 
-const users = {
-    id:["tmdeh","유승도"],
-    psword: ["1234","3216"],
-};
+
 
 
 const process = {
     login: (req, res) => {
         const id = req.body.id,
             psword = req.body.password;
+        const users = UserString.getUsers("id", "psword", "name");
 
-        if(users.id.includes(id)){
-            const idx = users.id.indexOf(id);
-            if(users.psword[idx] === psword){
-                return res.json({
-                    success: true,
-                });
+        const response ={};
+
+         if(users.id.includes(id)){
+             const idx = users.id.indexOf(id);
+             if(users.psword[idx] === psword){
+                response.success = true;
+                return res.json(response);
             }
         }
-        return res.json({
-            success: false,
-            msg: "로그인에 실패하였습니다",
-        })
+        response.success = false;
+        response.msg = "로그인에 실패하셨습니다.";
+        return res.json(response);
     },
 };
 
